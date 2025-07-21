@@ -3,8 +3,8 @@
 while true; do
     clear
     
-    echo "$(date) - CPU Monitor"
-    echo "===================="
+    echo "$(date) — CPU Monitor"
+    echo "==============================================="
     
     pid=$(ps aux | sed '1d' | sort -k3 -nr | head -1 | awk '{print $2}')
     
@@ -15,47 +15,41 @@ while true; do
     echo "=== /proc/$pid ==="
    
     name=$(cat /proc/$pid/comm 2>/dev/null)
-    echo "— name: ${name:-[unknown]}"
-    echo ""
+    echo -e "— name: ${name:-[unknown]}\n"
 
     cmd=$(cat /proc/$pid/cmdline 2>/dev/null | tr '\0' ' ')
-    echo "— cmdline: ${cmd:-[unknown]}"
-    echo ""
+    echo -e "— cmdline: ${cmd:-[unknown]}\n"
 
     status=$(grep -E '^(State|VmRSS|Threads):' /proc/$pid/status 2>/dev/null)
     if [ -z "$status" ]; then
-        echo "— status: [unknown]"
+        echo -e "— status: [unknown]\n"
     else
         echo "— status:"
-        echo "$status"
+        echo -e "$status\n"
     fi
-    echo ""
 
     mem=$(grep -E '^(VmSize|VmRSS|VmData|VmSwap):' /proc/$pid/status 2>/dev/null)
     if [ -z "$mem" ]; then
-        echo "— memory: [unknown]"
+        echo -e "— memory: [unknown]\n"
     else
         echo "— memory:"
-        echo "$mem"
+        echo -e "$mem\n"
     fi
-    echo ""
 
     io=$(grep -E '^(read_bytes|write_bytes):' /proc/$pid/io 2>/dev/null)
     if [ -z "$io" ]; then
-        echo "— io: [unknown]"
+        echo -e "— io: [unknown]\n"
     else
         echo "— io:"
-        echo "$io"
+        echo -e "$io\n"
     fi
-    echo ""
 
     if [ -d "/proc/$pid/fd" ]; then
         fds=$(ls "/proc/$pid/fd" 2>/dev/null | wc -l)
-        echo "— fds: $fds"
+        echo -e "— fds: $fds\n"
     else
-        echo "— fds: [unknown]"
+        echo -e "— fds: [unknown]\n"
     fi
-    echo ""
 
     sleep 5
 done
